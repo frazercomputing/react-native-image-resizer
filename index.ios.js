@@ -31,7 +31,7 @@ export default {
     }
 
     return new Promise((resolve, reject) => {
-      NativeModules.ImageResizer.createResizedImage(
+      NativeModules.ImageResizer.createGrayscaleResizedImage(
         path,
         width,
         height,

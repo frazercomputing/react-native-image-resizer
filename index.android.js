@@ -20,7 +20,7 @@ export default {
   },
   createGrayscaleResizedImage: (imagePath, newWidth, newHeight, compressFormat, quality, rotation = 0, outputPath) => {
     return new Promise((resolve, reject) => {
-      ImageResizerAndroid.createResizedImage(
+      ImageResizerAndroid.createGrayscaleResizedImage(
         imagePath,
         newWidth,
         newHeight,
