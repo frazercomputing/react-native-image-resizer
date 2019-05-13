@@ -19,7 +19,12 @@ RCT_EXPORT_MODULE();
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
     CIImage *grayscale = [ciImage imageByApplyingFilter:@"CIColorControls"
                                     withInputParameters: @{kCIInputSaturationKey : @0.0}];
-    return [UIImage imageWithCIImage:grayscale];
+    UIImage* grayscaleimage = [UIImage imageWithCIImage:grayscale];
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, 0.0);
+    [grayscaleimage drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 bool saveImage(NSString * fullPath, UIImage * image, NSString * format, float quality)
