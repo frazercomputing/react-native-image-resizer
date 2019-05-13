@@ -263,6 +263,77 @@ public class ImageResizer {
         return sourceImage;
     }
 
+
+    private static Bitmap toGrayscale(Bitmap bmpOriginal)
+    {        
+        int width, height;
+        height = bmpOriginal.getHeight();
+        width = bmpOriginal.getWidth();    
+
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bmpOriginal, 0, 0, paint);
+        return bmpGrayscale;
+    }
+
+    /**
+     * Create a resized version of the given image.
+     */
+    public static File createGrayscaleResizedImage(Context context, Uri imageUri, int newWidth,
+                                            int newHeight, Bitmap.CompressFormat compressFormat,
+                                            int quality, int rotation, String outputPath) throws IOException  {
+        Bitmap sourceImage = null;
+        String imageUriScheme = imageUri.getScheme();
+        if (imageUriScheme == null || imageUriScheme.equalsIgnoreCase(SCHEME_FILE) || imageUriScheme.equalsIgnoreCase(SCHEME_CONTENT)) {
+            sourceImage = ImageResizer.loadBitmapFromFile(context, imageUri, newWidth, newHeight);
+        } else if (imageUriScheme.equalsIgnoreCase(SCHEME_DATA)) {
+            sourceImage = ImageResizer.loadBitmapFromBase64(imageUri);
+        }
+
+        if (sourceImage == null) {
+            throw new IOException("Unable to load source image from path");
+        }
+
+        // Scale it first so there are fewer pixels to transform in the rotation
+        Bitmap scaledImage = ImageResizer.resizeImage(sourceImage, newWidth, newHeight);
+        if (sourceImage != scaledImage) {
+            sourceImage.recycle();
+        }
+
+        // Rotate if necessary
+        Bitmap rotatedImage = scaledImage;
+        int orientation = getOrientation(context, imageUri);
+        rotation = orientation + rotation;
+        rotatedImage = ImageResizer.rotateImage(scaledImage, rotation);
+
+        if (scaledImage != rotatedImage) {
+            scaledImage.recycle();
+        }
+        
+        //Graysaleimage 
+        Bitmap grayscaleImage = ImageResizer.toGrayscale(rotatedImage);
+
+
+        // Save the resulting image
+        File path = context.getCacheDir();
+        if (outputPath != null) {
+            path = new File(outputPath);
+        }
+
+        File newFile = ImageResizer.saveImage(rotatedImage, path,
+                Long.toString(new Date().getTime()), compressFormat, quality);
+
+        // Clean up remaining image
+        rotatedImage.recycle();
+
+        return newFile;
+    }
+
     /**
      * Create a resized version of the given image.
      */
