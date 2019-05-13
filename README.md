@@ -50,7 +50,22 @@ ImageResizer.createResizedImage(imageUri, newWidth, newHeight, compressFormat, q
   // inspect err to get more details.
 });
 ```
+or you creatre grayscaled image
 
+
+```javascript
+import ImageResizer from 'react-native-image-resizer';
+
+ImageResizer.createGrayscaleResizedImage(imageUri, newWidth, newHeight, compressFormat, quality, rotation, outputPath).then((response) => {
+  // response.uri is the URI of the new image that can now be displayed, uploaded...
+  // response.path is the path of the new image
+  // response.name is the name of the new image with the extension
+  // response.size is the size of the new image
+}).catch((err) => {
+  // Oops, something went wrong. Check that the filename is correct and
+  // inspect err to get more details.
+});
+```
 ### Sample app
 
 A basic, sample app is available in [the `example` folder](https://github.com/bamlab/react-native-image-resizer/tree/master/example). It uses the module to resize a photo from the Camera Roll.
