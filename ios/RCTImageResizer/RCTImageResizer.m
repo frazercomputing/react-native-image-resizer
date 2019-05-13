@@ -240,7 +240,7 @@ RCT_EXPORT_METHOD(createGrayscaleResizedImage:(NSString *)path
         UIImage * grayscaleImage = [self grayscaleImage:scaledImage];
         
         // Compress and save the image
-        if (!saveImage(fullPath, scaledImage, format, quality)) {
+        if (!saveImage(fullPath, grayscaleImage, format, quality)) {
             callback(@[@"Can't save the image. Check your compression format and your output path", @""]);
             return;
         }
